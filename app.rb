@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'sqlite3'
 require 'slim'
+require 'sinatra/reloader'
 
 # Open a shared connection to the SQLite database
 DB = SQLite3::Database.new('db/todos.db')
