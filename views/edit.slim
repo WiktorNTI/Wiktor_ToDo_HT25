@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    meta charset="utf-8"
+    title Redigera Todo
+  body
+    h1 Redigera todo
+    form action="/todos/#{todo['id']}/update" method="post"
+      label for="name" Namn
+      input type="text" id="name" name="name" value=todo['name'] 
+
+      label for="description" Beskrivning
+      textarea id="description" name="description" rows="4"= todo['description']
+
+      button type="submit" Uppdatera
+
+    p
+      a href="/" Tillbaka

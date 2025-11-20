@@ -8,12 +8,17 @@ html
     ul
       - todos.each do |todo|
         li
-          strong= todo["name"]
-          |  -
-          = todo["description"]
+          div
+            strong= todo['name']
+            |  -
+            = todo['description']
+          div
+            a href="/todos/#{todo['id']}/edit" Redigera
+            form action="/todos/#{todo['id']}/delete" method="post" style="display:inline"
+              button type="submit" onclick="return confirm('Ta bort?')" Ta bort
 
     h2 Lägg till en ny todo
-    form action="/" method="post"
-      input type="text" name="name" placeholder="Namn"
+    form action="/todos" method="post"
+      input type="text" name="name" placeholder="Namn" required
       textarea name="description" placeholder="Beskrivning"
       button type="submit" Lägg till
