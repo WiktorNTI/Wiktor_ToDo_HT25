@@ -1,17 +1,17 @@
 require 'sqlite3'
 
-db = SQLite3::Database.new("todos.db")
+db_path = File.expand_path('todos.db', __dir__)
+db = SQLite3::Database.new(db_path)
 
-
-def seed!(db)
-  puts "Using db file: db/todos.db"
-  puts "🧹 Dropping old tables..."
+def seed!(db, db_path)
+  puts "Using db file: #{db_path}"
+  puts "Dropping old tables..."
   drop_tables(db)
-  puts "🧱 Creating tables..."
+  puts "Creating tables..."
   create_tables(db)
-  puts "🍎 Populating tables..."
+  puts "Populating tables..."
   populate_tables(db)
-  puts "✅ Done seeding the database!"
+  puts "Done seeding the database!"
 end
 
 def drop_tables(db)
@@ -31,4 +31,4 @@ def populate_tables(db)
   db.execute('INSERT INTO todos (name, description) VALUES ("Pynta gran", "Glöm inte lamporna i granen och tomten")')
 end
 
-seed!(db)
+seed!(db, db_path)

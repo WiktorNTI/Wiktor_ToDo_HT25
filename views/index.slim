@@ -1,1 +1,19 @@
+doctype html
+html
+  head
+    meta charset="utf-8"
+    title Todo
+  body
+    h1 Todos
+    ul
+      - todos.each do |todo|
+        li
+          strong= todo["name"]
+          |  -
+          = todo["description"]
 
+    h2 Lägg till en ny todo
+    form action="/" method="post"
+      input type="text" name="name" placeholder="Namn"
+      textarea name="description" placeholder="Beskrivning"
+      button type="submit" Lägg till
