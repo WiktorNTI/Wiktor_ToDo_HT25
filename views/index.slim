@@ -1,24 +1,25 @@
-doctype html
-html
-  head
-    meta charset="utf-8"
-    title Todo
-  body
-    h1 Todos
-    ul
-      - todos.each do |todo|
-        li
-          div
-            strong= todo['name']
-            |  -
-            = todo['description']
-          div
-            a href="/todos/#{todo['id']}/edit" Redigera
-            form action="/todos/#{todo['id']}/delete" method="post" style="display:inline"
-              button type="submit" onclick="return confirm('Ta bort?')" Ta bort
+h1 Todos
 
-    h2 Lägg till en ny todo
-    form action="/todos" method="post"
-      input type="text" name="name" placeholder="Namn" required
-      textarea name="description" placeholder="Beskrivning"
-      button type="submit" Lägg till
+- if todos.empty?
+  p.muted Inga todos ännu. Lägg till en ny uppgift nedan.
+- else
+  ul.todo-grid
+    - todos.each do |todo|
+      li.todo-item
+        strong= todo['name']
+        p= todo['description']
+        div.todo-actions
+          a.btn-secondary href="/todos/#{todo['id']}/edit" Redigera
+          form action="/todos/#{todo['id']}/delete" method="post"
+            button.btn-danger type="submit" onclick="return confirm('Ta bort?')" Ta bort
+
+section.card
+  h2 Lägg till en ny todo
+  form action="/todos" method="post" class="form-grid"
+    label for="name" Namn
+    input type="text" id="name" name="name" placeholder="Namn" required
+
+    label for="description" Beskrivning
+    textarea id="description" name="description" rows="3" placeholder="Beskrivning"
+
+    button.btn type="submit" Lägg till

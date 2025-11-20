@@ -1,10 +1,14 @@
-<!DOCTYPE html>
+doctype html
 html lang="en"
   head
-    meta charset="UTF-8"/
-    meta name="viewport" content="width=device-width, initial-scale=1.0"/
-    link rel="stylesheet" href="/style.css?#{Time.now.to_i}"/
-    title Todo
+    meta charset="UTF-8"
+    meta name="viewport" content="width=device-width, initial-scale=1.0"
+    link rel="stylesheet" href="/style.css?#{Time.now.to_i}"
+    title Todo List - (NOW WITH CRUD!)
   body 
-    
-    ==yield
+    header
+      nav.nav
+        span.brand ToDo
+        a href="/" Lista
+    main.page
+      == yield

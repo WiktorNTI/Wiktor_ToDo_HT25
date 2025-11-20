@@ -13,6 +13,7 @@ get '/' do
   slim(:index, locals: { todos: todos })
 end
 
+#Create new ToDo List
 post '/todos' do
   name = params[:name].to_s.strip
   description = params[:description].to_s.strip
@@ -21,21 +22,21 @@ post '/todos' do
   DB.execute('INSERT INTO todos (name, description) VALUES (?, ?)', [name, description])
   redirect '/'
 end
-
+# Edit ToDo List item
 get '/todos/:id/edit' do
   todo = DB.execute('SELECT * FROM todos WHERE id = ?', params[:id].to_i).first
   halt 404, 'Todo hittades inte' unless todo
 
   slim(:edit, locals: { todo: todo })
 end
-
+ #Update ToDo list item
 post '/todos/:id/update' do
   name = params[:name].to_s.strip
   description = params[:description].to_s.strip
   DB.execute('UPDATE todos SET name = ?, description = ? WHERE id = ?', [name, description, params[:id].to_i])
   redirect '/'
 end
-
+ #Create ToDo list item
 post '/todos/:id/delete' do
   DB.execute('DELETE FROM todos WHERE id = ?', params[:id].to_i)
   redirect '/'
