@@ -1,14 +1,28 @@
 h1 Todos
 
+form.filter-form action="/" method="get"
+  label for="filter" Filtera
+  select name="filter" id="filter" onchange="this.form.submit()"
+    option value="all" selected=(filter == 'all') Alla
+    option value="incomplete" selected=(filter == 'incomplete') Aktiva
+    option value="complete" selected=(filter == 'complete') Klara
+
 - if todos.empty?
   p.muted Inga todos ännu. Lägg till en ny uppgift nedan.
 - else
   ul.todo-grid
     - todos.each do |todo|
-      li.todo-item
-        strong= todo['name']
+      - completed = todo['completed'].to_i == 1
+      li.todo-item class=(completed ? 'is-complete' : nil)
+        div.todo-header
+          strong= todo['name']
+          - if completed
+            span.badge Klar
         p= todo['description']
         div.todo-actions
+          form action="/todos/#{todo['id']}/toggle" method="post"
+            input type="hidden" name="completed" value=(completed ? 0 : 1)
+            button.btn-secondary type="submit"= completed ? 'Markera som ofärdig' : 'Markera som klar'
           a.btn-secondary href="/todos/#{todo['id']}/edit" Redigera
           form action="/todos/#{todo['id']}/delete" method="post"
             button.btn-danger type="submit" onclick="return confirm('Ta bort?')" Ta bort
