@@ -9,6 +9,7 @@ enable :sessions
 # Open a shared connection to the SQLite database
 DB = SQLite3::Database.new('db/todos.db')
 DB.results_as_hash = true
+DB.busy_timeout = 2000
 DB.execute('PRAGMA foreign_keys = ON')
 
 def clean_tag_names(raw)
@@ -92,9 +93,11 @@ post '/todos' do
   new_tag_names = clean_tag_names(params[:new_tags])
   selected_tag_ids.concat(find_or_create_tags(new_tag_names))
 
+  DB.transaction
   DB.execute('INSERT INTO todos (name, description, completed) VALUES (?, ?, 0)', [name, description])
   todo_id = DB.last_insert_row_id
   save_tags(todo_id, selected_tag_ids)
+  DB.commit
   redirect '/'
 end
 # Edit ToDo List item
@@ -123,6 +126,10 @@ post '/todos/:id/toggle' do
 end
  #Delete ToDo list item
 post '/todos/:id/delete' do
-  DB.execute('DELETE FROM todos WHERE id = ?', params[:id].to_i)
+  todo_id = params[:id].to_i
+  DB.transaction
+  DB.execute('DELETE FROM todo_tags WHERE todo_id = ?', [todo_id])
+  DB.execute('DELETE FROM todos WHERE id = ?', todo_id)
+  DB.commit
   redirect '/'
 end
