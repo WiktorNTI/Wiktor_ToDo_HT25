@@ -6,13 +6,15 @@ section.card
     input type="text" id="name" name="name" value=todo['name'] required
 
     label for="description" Beskrivning
-    textarea id="description" name="description" rows="4"= todo['description']
+    textarea id="description" name="description" rows="4"
+      = todo['description']
 
     label for="category_id_edit" Kategori
     select id="category_id_edit" name="category_id"
       option value="" selected=(todo['category_id'].nil?) Ingen kategori
       - categories.each do |cat|
-        option value=cat['category_id'] selected=(todo['category_id'].to_i == cat['category_id'].to_i)= cat['name']
+        option value=cat['category_id'] selected=(todo['category_id'].to_i == cat['category_id'].to_i)
+          = cat['name']
 
     button.btn type="submit" Uppdatera
 

@@ -10,7 +10,15 @@ form.filter-form action="/filter" method="post"
   select name="category_id" id="category_filter" onchange="this.form.submit()"
     option value="" selected=(selected_category_id.nil?) Alla kategorier
     - categories.each do |cat|
-      option value=cat['category_id'] selected=(selected_category_id == cat['category_id'].to_i) = cat['name']
+      option value=cat['category_id'] selected=(selected_category_id == cat['category_id'].to_i)
+        = cat['name']
+  label for="sort" Sortera
+  select name="sort" id="sort" onchange="this.form.submit()"
+    option value="newest" selected=(sort == 'newest') Newest first
+    option value="oldest" selected=(sort == 'oldest') Oldest first
+    option value="name_asc" selected=(sort == 'name_asc') Name A-Z
+    option value="name_desc" selected=(sort == 'name_desc') Name Z-A
+    option value="status" selected=(sort == 'status') Status (done first)
 
 - if todos.empty?
   p.muted Inga todos hittades

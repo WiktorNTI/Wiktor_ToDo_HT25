@@ -11,10 +11,12 @@ DB.results_as_hash = true
 get '/' do
   filter = params[:filter].to_s
   selected_category = params[:category_id].to_s
+  sort = params[:sort].to_s
 
 
   filter = session[:filter].to_s if filter.empty? && session[:filter]
   selected_category = session[:category_id].to_s if selected_category.empty? && session[:category_id]
+  sort = session[:sort].to_s if sort.empty? && session[:sort]
 
   selected_category_id = selected_category.empty? ? nil : selected_category.to_i
 
@@ -41,15 +43,25 @@ get '/' do
     LEFT JOIN cat ON cat.category_id = todos.category_id
   SQL
   where_clause = conditions.empty? ? '' : "WHERE #{conditions.join(' AND ')}"
-  todos = DB.execute("#{base_sql} #{where_clause} ORDER BY todos.id DESC", binds)
+  sort_options = {
+    'newest' => 'todos.id DESC',
+    'oldest' => 'todos.id ASC',
+    'name_asc' => 'LOWER(todos.name) ASC',
+    'name_desc' => 'LOWER(todos.name) DESC',
+    'status' => 'todos.completed DESC, todos.id DESC'
+  }
+  order_clause = sort_options[sort] || sort_options['newest']
+  sort = 'newest' unless sort_options.key?(sort)
+  todos = DB.execute("#{base_sql} #{where_clause} ORDER BY #{order_clause}", binds)
 
   categories = DB.execute('SELECT category_id, name FROM cat ORDER BY name')
-  slim(:index, locals: { todos: todos, filter: filter, categories: categories, selected_category_id: selected_category_id })
+  slim(:index, locals: { todos: todos, filter: filter, categories: categories, selected_category_id: selected_category_id, sort: sort })
 end
 
 post '/filter' do
   session[:filter] = params[:filter].to_s
   session[:category_id] = params[:category_id].to_s
+  session[:sort] = params[:sort].to_s
   redirect '/'
 end
 
