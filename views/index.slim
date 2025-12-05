@@ -6,12 +6,12 @@ form.filter-form action="/filter" method="post"
     option value="all" selected=(filter == 'all') Alla
     option value="incomplete" selected=(filter == 'incomplete') Aktiva
     option value="complete" selected=(filter == 'complete') Klara
-  label for="category_filter" Filtrera kategori
-  select name="category_id" id="category_filter" onchange="this.form.submit()"
-    option value="" selected=(selected_category_id.nil?) Alla kategorier
-    - categories.each do |cat|
-      option value=cat['category_id'] selected=(selected_category_id == cat['category_id'].to_i)
-        = cat['name']
+  label Filtrera taggar
+  .tag-filter
+    - tags.each do |tag|
+      label.tag-pill
+        input type="checkbox" name="tag_ids[]" value=tag['category_id'] checked=(selected_tag_ids.include?(tag['category_id'].to_i)) onchange="this.form.submit()"
+        span= tag['name']
   label for="sort" Sortera
   select name="sort" id="sort" onchange="this.form.submit()"
     option value="newest" selected=(sort == 'newest') Newest first
@@ -26,18 +26,21 @@ form.filter-form action="/filter" method="post"
   ul.todo-grid
     - todos.each do |todo|
       - completed = todo['completed'].to_i == 1
+      - tag_names = (todo['tag_names'] || '').split(',').map(&:strip).reject(&:empty?)
       li.todo-item class=(completed ? 'is-complete' : nil)
         div.todo-header
           strong= todo['name']
-          - if todo['category_name']
-            span.badge= todo['category_name']
+          - unless tag_names.empty?
+            div.badge-row
+              - tag_names.each do |tag_name|
+                span.badge= tag_name
           - if completed
             span.badge Klar
         p= todo['description']
         div.todo-actions
           form action="/todos/#{todo['id']}/toggle" method="post"
             input type="hidden" name="completed" value=(completed ? 0 : 1)
-            button.btn-secondary type="submit"= completed ? 'Markera som ofärdig' : 'Markera som klar'
+            button.btn-secondary type="submit"= completed ? 'Markera som ofardig' : 'Markera som klar'
           a.btn-secondary href="/todos/#{todo['id']}/edit" Redigera
           form action="/todos/#{todo['id']}/delete" method="post"
             button.btn-danger type="submit" onclick="return confirm('Ta bort?')" Ta bort
@@ -51,10 +54,13 @@ section.card
     label for="description" Beskrivning
     textarea id="description" name="description" rows="3" placeholder="Beskrivning"
 
-    label for="category_id_new" Kategori
-    select name="category_id" id="category_id_new"
-      option value="" Ingen kategori
-      - categories.each do |cat|
-        option value=cat['category_id'] = cat['name']
+    label Taggar
+    .tag-filter
+      - tags.each do |tag|
+        label.tag-pill
+          input type="checkbox" name="tag_ids[]" value=tag['category_id']
+          span= tag['name']
+    label for="new_tags" Skapa nya taggar (komma-separerade)
+    input type="text" id="new_tags" name="new_tags" placeholder="t.ex. skola, hem"
 
     button.btn type="submit" Lägg till

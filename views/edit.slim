@@ -9,12 +9,15 @@ section.card
     textarea id="description" name="description" rows="4"
       = todo['description']
 
-    label for="category_id_edit" Kategori
-    select id="category_id_edit" name="category_id"
-      option value="" selected=(todo['category_id'].nil?) Ingen kategori
-      - categories.each do |cat|
-        option value=cat['category_id'] selected=(todo['category_id'].to_i == cat['category_id'].to_i)
-          = cat['name']
+    label Taggar
+    .tag-filter
+      - tags.each do |tag|
+        label.tag-pill
+          input type="checkbox" name="tag_ids[]" value=tag['category_id'] checked=(todo_tag_ids.include?(tag['category_id'].to_i))
+          span= tag['name']
+
+    label for="new_tags" Skapa nya taggar (komma-separerade)
+    input type="text" id="new_tags" name="new_tags" placeholder="t.ex. skola, hem"
 
     button.btn type="submit" Uppdatera
 
