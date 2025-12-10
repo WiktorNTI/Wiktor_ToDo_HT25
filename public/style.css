@@ -229,6 +229,16 @@ button:hover { filter: brightness(1.05); }
   gap: 8px;
 }
 
+.tag-multi {
+  width: 220px;
+  min-height: 120px;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
 .tag-pill {
   display: inline-flex;
   align-items: center;
@@ -243,6 +253,14 @@ button:hover { filter: brightness(1.05); }
 .tag-pill input {
   width: auto;
   margin: 0;
+}
+
+.tag-edit-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 .badge-row {

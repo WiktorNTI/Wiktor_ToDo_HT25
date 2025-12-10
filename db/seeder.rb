@@ -47,9 +47,17 @@ def create_todo_tags_table(db)
 end
 
 def populate_todos(db)
-  db.execute('INSERT INTO todos (name, description, completed, category_id) VALUES (?, ?, 0, 1)', ['Köp mjölk', '3 liter mellanmjölk, eko'])
-  db.execute('INSERT INTO todos (name, description, completed, category_id) VALUES (?, ?, 1, 2)', ['Köp julgran', 'En röd gran'])
-  db.execute('INSERT INTO todos (name, description, completed, category_id) VALUES (?, ?, 0, 4)', ['Pynta gran', 'Glöm inte lamporna i granen och tomten'])
+  db.execute('INSERT INTO todos (name, description, completed) VALUES (?, ?, 0)', ['Köp mjölk', '3 liter mellanmjölk, eko'])
+  milk_id = db.last_insert_row_id
+  db.execute('INSERT INTO todo_tags (todo_id, category_id) VALUES (?, ?), (?, ?)', [milk_id, 1, milk_id, 3])
+
+  db.execute('INSERT INTO todos (name, description, completed) VALUES (?, ?, 1)', ['Köp julgran', 'En röd gran'])
+  tree_id = db.last_insert_row_id
+  db.execute('INSERT INTO todo_tags (todo_id, category_id) VALUES (?, ?)', [tree_id, 2])
+
+  db.execute('INSERT INTO todos (name, description, completed) VALUES (?, ?, 0)', ['Pynta gran', 'Glöm inte lamporna i granen och tomten'])
+  decorate_id = db.last_insert_row_id
+  db.execute('INSERT INTO todo_tags (todo_id, category_id) VALUES (?, ?)', [decorate_id, 4])
 end
 
 seed!(db, db_path)

@@ -6,12 +6,12 @@ form.filter-form action="/filter" method="post"
     option value="all" selected=(filter == 'all') Alla
     option value="incomplete" selected=(filter == 'incomplete') Aktiva
     option value="complete" selected=(filter == 'complete') Klara
-  label Filtrera taggar
-  .tag-filter
+  label for="tag_filter" Filtrera taggar
+  select(name="tag_ids[]" id="tag_filter" multiple="multiple" size="5" class="tag-multi" onchange="this.form.submit()")
     - tags.each do |tag|
-      label.tag-pill
-        input type="checkbox" name="tag_ids[]" value=tag['category_id'] checked=(selected_tag_ids.include?(tag['category_id'].to_i)) onchange="this.form.submit()"
-        span= tag['name']
+      option value=tag['category_id'] selected=(selected_tag_ids.include?(tag['category_id'].to_i)) style="background-color: #{tag['color']}; color: #0b1021"
+        = tag['name']
+ 
   label for="sort" Sortera
   select name="sort" id="sort" onchange="this.form.submit()"
     option value="newest" selected=(sort == 'newest') Newest first
@@ -26,14 +26,15 @@ form.filter-form action="/filter" method="post"
   ul.todo-grid
     - todos.each do |todo|
       - completed = todo['completed'].to_i == 1
-      - tag_names = (todo['tag_names'] || '').split(',').map(&:strip).reject(&:empty?)
+      - tag_list = todo['parsed_tags'] || []
       li.todo-item class=(completed ? 'is-complete' : nil)
         div.todo-header
           strong= todo['name']
-          - unless tag_names.empty?
+          - unless tag_list.empty?
             div.badge-row
-              - tag_names.each do |tag_name|
-                span.badge= tag_name
+              - tag_list.each do |tag_item|
+                span.badge style="background: #{tag_item['color']}; color: #0b1021"
+                  = tag_item['name']
           - if completed
             span.badge Klar
         p= todo['description']
@@ -49,17 +50,25 @@ section.card
   h2 Lägg till en ny todo
   form action="/todos" method="post" class="form-grid"
     label for="name" Namn
-    input type="text" id="name" name="name" placeholder="Namn" 
+    input(type="text" id="name" name="name" placeholder="Namn" required="required")
     label for="description" Beskrivning
     textarea id="description" name="description" rows="3" placeholder="Beskrivning"
 
-    label Taggar
-    .tag-filter
+    label for="tag_ids" Taggar
+    select(name="tag_ids[]" id="tag_ids" multiple="multiple" size="5" class="tag-multi")
       - tags.each do |tag|
-        label.tag-pill
-          input type="checkbox" name="tag_ids[]" value=tag['category_id']
-          span= tag['name']
+        option value=tag['category_id'] style="background-color: #{tag['color']}; color: #0b1021"
+          = tag['name']
     label for="new_tags" Skapa nya taggar (komma-separerade)
     input type="text" id="new_tags" name="new_tags" placeholder="t.ex. skola, hem"
 
     button.btn type="submit" Lägg till
+
+section.card
+  h2 Hantera taggar
+  - tags.each do |tag|
+    form.tag-edit-row action="/tags/#{tag['category_id']}/update" method="post"
+      input type="text" name="name" value=tag['name']
+      input type="color" name="color" value=tag['color']
+      button.btn-secondary type="submit" Spara
+      button.btn-danger type="submit" formaction="/tags/#{tag['category_id']}/delete" formmethod="post" onclick="return confirm('Ta bort tagg?')" Ta bort

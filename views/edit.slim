@@ -1,25 +1,24 @@
 h1 Redigera todo
 
 section.card
-  form action="/todos/#{todo['id']}/update" method="post" class="form-grid"
+  form(action="/todos/#{todo['id']}/update" method="post" class="form-grid")
     label for="name" Namn
-    input type="text" id="name" name="name" value=todo['name'] required
+    input(type="text" id="name" name="name" value=todo['name'] required="required")
 
     label for="description" Beskrivning
-    textarea id="description" name="description" rows="4"
+    textarea(id="description" name="description" rows="4")
       = todo['description']
 
-    label Taggar
-    .tag-filter
+    label for="tag_ids" Taggar
+    select(name="tag_ids[]" id="tag_ids" multiple="multiple" size="5" class="tag-multi")
       - tags.each do |tag|
-        label.tag-pill
-          input type="checkbox" name="tag_ids[]" value=tag['category_id'] checked=(todo_tag_ids.include?(tag['category_id'].to_i))
-          span= tag['name']
+        option value=tag['category_id'] selected=(todo_tag_ids.include?(tag['category_id'].to_i)) style="background-color: #{tag['color']}; color: #0b1021"
+          = tag['name']
 
     label for="new_tags" Skapa nya taggar (komma-separerade)
-    input type="text" id="new_tags" name="new_tags" placeholder="t.ex. skola, hem"
+    input(type="text" id="new_tags" name="new_tags" placeholder="t.ex. skola, hem")
 
-    button.btn type="submit" Uppdatera
+    button.btn(type="submit") Uppdatera
 
 p
-  a.btn-secondary href="/" Tillbaka
+  a.btn-secondary(href="/") Tillbaka
