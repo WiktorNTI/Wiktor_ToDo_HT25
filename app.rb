@@ -2,7 +2,10 @@ require 'sinatra'
 require 'sqlite3'
 require 'slim'
 require 'sinatra/reloader'
+require 'securerandom'
 
+enable :sessions
+set :session_secret, ENV.fetch('SESSION_SECRET', SecureRandom.hex(64))
 
 # Open a shared connection to the SQLite database
 DB = SQLite3::Database.new('db/todos.db')
