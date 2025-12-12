@@ -53,7 +53,11 @@ form.filter-form action="/filter" method="post"
                   = tag_item['name']
           - if completed
             span.badge Klar
-        p= todo['description']
+        - desc_id = "desc-#{todo['id']}"
+        p.todo-desc id=desc_id = todo['description']
+        - unless todo['description'].to_s.strip.empty?
+          button.btn-tertiary.desc-toggle type="button" data-target=desc_id onclick="toggleDesc(this)"
+            | Visa mer
         div.todo-actions
           form action="/todos/#{todo['id']}/toggle" method="post"
             input type="hidden" name="completed" value=(completed ? 0 : 1)
@@ -76,10 +80,16 @@ section.card
         label.tag-pill style="--pill-bg: #{tag['color']};"
           input type="checkbox" name="tag_ids[]" value=tag['category_id']
           span.tag-pill__label= tag['name']
-    label for="new_tags" Skapa nya taggar (komma-separerade)
-    input type="text" id="new_tags" name="new_tags" placeholder="t.ex. skola, hem"
-
     button.btn type="submit" Lägg till
 
 div style="display: flex; justify-content: flex-end;"
   a.btn-secondary href="/tags" Hantera taggar
+
+javascript:
+  function toggleDesc(btn) {
+    var id = btn.dataset.target;
+    var p = document.getElementById(id);
+    if (!p) return;
+    var expanded = p.classList.toggle('is-expanded');
+    btn.textContent = expanded ? 'Visa mindre' : 'Visa mer';
+  }
