@@ -16,7 +16,7 @@ def clean_tag_names(raw)
 end
 
 def find_or_create_tags(tag_names)
-  default_color = '#38bdf8'
+  default_color = '#FFE135'
   tag_names.map do |name|
     existing = DB.get_first_value('SELECT category_id FROM cat WHERE LOWER(name) = LOWER(?)', [name])
     next existing.to_i if existing
@@ -61,7 +61,7 @@ get '/' do
   end
 
   todos.each do |todo|
-    tag_rows = DB.execute('SELECT cat.name, IFNULL(cat.color, "#38bdf8") AS color
+    tag_rows = DB.execute('SELECT cat.name, IFNULL(cat.color, "#FFE135") AS color
                            FROM cat
                            INNER JOIN todo_tags ON todo_tags.category_id = cat.category_id
                            WHERE todo_tags.todo_id = ?', [todo['id']])
@@ -87,6 +87,11 @@ get '/' do
 
   tags = DB.execute('SELECT category_id, name, IFNULL(color, "#38bdf8") AS color FROM cat ORDER BY name')
   slim(:index, locals: { todos: todos, filter: filter, tags: tags, selected_tag_ids: selected_tag_ids, sort: sort })
+end
+
+get '/tags' do
+  tags = DB.execute('SELECT category_id, name, IFNULL(color, "#38bdf8") AS color FROM cat ORDER BY name')
+  slim(:tags, locals: { tags: tags })
 end
 
 post '/filter' do
@@ -149,7 +154,7 @@ post '/tags/:id/update' do
   id = params[:id].to_i
   name = params[:name].to_s.strip
   color = params[:color].to_s.strip
-  color = '#38bdf8' if color.empty?
+  color = '#FFE135' if color.empty?
   DB.execute('UPDATE cat SET name = ?, color = ? WHERE category_id = ?', [name, color, id])
   redirect '/'
 end

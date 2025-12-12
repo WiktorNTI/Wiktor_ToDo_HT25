@@ -20,10 +20,10 @@ end
 
 def populate_cat_table(db)
   [
-    ['Private', '#38bdf8'],
-    ['Public', '#a855f7'],
-    ['Purchase', '#f59e0b'],
-    ['Do', '#22c55e']
+    ['NEW', '#FFE135'],
+    ['Private', '#a855f7'],
+    ['Public', '#f59e0b'],
+    ['In Progress', '#22c55e']
   ].each do |name, color|
     db.execute('INSERT INTO cat (name, color) VALUES (?, ?)', [name, color])
   end

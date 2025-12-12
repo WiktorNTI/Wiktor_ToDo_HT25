@@ -10,10 +10,12 @@ section.card
       = todo['description']
 
     label for="tag_ids" Taggar
-    select(name="tag_ids[]" id="tag_ids" multiple="multiple" size="5" class="tag-multi")
+    div.tag-grid
       - tags.each do |tag|
-        option value=tag['category_id'] selected=(todo_tag_ids.include?(tag['category_id'].to_i)) style="background-color: #{tag['color']}; color: #0b1021"
-          = tag['name']
+        - checked = todo_tag_ids.include?(tag['category_id'].to_i)
+        label.tag-pill style="--pill-bg: #{tag['color']};"
+          input type="checkbox" name="tag_ids[]" value=tag['category_id'] checked=checked
+          span.tag-pill__label= tag['name']
 
     label for="new_tags" Skapa nya taggar (komma-separerade)
     input(type="text" id="new_tags" name="new_tags" placeholder="t.ex. skola, hem")
