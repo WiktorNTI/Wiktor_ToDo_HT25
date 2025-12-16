@@ -54,8 +54,10 @@ form.filter-form action="/filter" method="post"
           - if completed
             span.badge Klar
         - desc_id = "desc-#{todo['id']}"
-        p.todo-desc id=desc_id = todo['description']
-        - unless todo['description'].to_s.strip.empty?
+        - desc_text = todo['description'].to_s
+        - has_desc = !desc_text.strip.empty?
+        p.todo-desc id=desc_id = desc_text
+        - if has_desc
           button.btn-tertiary.desc-toggle type="button" data-target=desc_id onclick="toggleDesc(this)"
             | Visa mer
         div.todo-actions
