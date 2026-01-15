@@ -1,4 +1,7 @@
-h1 Todos
+section.page-header
+  div
+    h1 Mina todos
+    p.muted= "Hej #{session[:user_name]}! Håll koll på dina uppgifter nedan."
 
 form.filter-form action="/filter" method="post"
   label for="filter" Filtera status
@@ -63,7 +66,7 @@ form.filter-form action="/filter" method="post"
         div.todo-actions
           form action="/todos/#{todo['id']}/toggle" method="post"
             input type="hidden" name="completed" value=(completed ? 0 : 1)
-            button.btn-secondary type="submit"= completed ? 'Markera som ofardig' : 'Markera som klar'
+            button.btn-secondary type="submit"= completed ? 'Markera som ofärdig' : 'Markera som klar'
           a.btn-secondary href="/todos/#{todo['id']}/edit" Redigera
           form action="/todos/#{todo['id']}/delete" method="post"
             button.btn-danger type="submit" onclick="return confirm('Ta bort?')" Ta bort

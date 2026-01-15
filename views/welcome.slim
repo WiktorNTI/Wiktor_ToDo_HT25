@@ -1,0 +1,58 @@
+section.hero
+  div.hero__text
+    p.hero__eyebrow Välkommen
+    h1.hero__title Till ditt to-do-centrum
+    p.hero__lead Samla allt du behöver göra på ett ställe. Logga in eller skapa ett konto för att fortsätta.
+  div.hero__cta
+    p.muted Kom tillbaka när som helst – dina senaste inloggningar finns sparade på den här enheten.
+
+- if auth_error && !auth_error.empty?
+  section.card.alert
+    p.alert__text= auth_error
+
+section.welcome-grid
+  section.card.welcome-card
+    h2 Logga in
+    form.login-form action="/login" method="post"
+      label for="username_login" Användarnamn
+      input type="text" id="username_login" name="username" placeholder="t.ex. test" required="required" autofocus="autofocus"
+      label for="password_login" Lösenord
+      input type="password" id="password_login" name="password" placeholder="••••" required="required"
+      button.btn type="submit" Gå till dina todos
+
+  section.card.signup-card
+    h2 Skapa konto
+    form.login-form action="/signup" method="post"
+      label for="username_signup" Användarnamn
+      input type="text" id="username_signup" name="username" placeholder="t.ex. wiktor" required="required"
+      label for="password_signup" Lösenord
+      input type="password" id="password_signup" name="password" placeholder="Minst 4 tecken" required="required"
+      button.btn-secondary type="submit" Skapa konto
+
+  - if recent_users.any?
+    section.card.recent-card
+      h2 Tidigare inloggningar
+      p.muted Välj ett konto och fyll i lösenordet.
+      ul.recent-list
+        - recent_users.each do |user|
+          li.recent-row
+            details.recent-details
+              summary.recent-toggle
+                span.user-name= user
+                span.chevron ▸
+              form.recent-user action="/login" method="post"
+                input type="hidden" name="existing_user" value=user
+                label class="recent-user__label" = "Lösenord för #{user}"
+                input.recent-user__password type="password" name="password" placeholder="••••" required="required"
+                button.recent-user__button type="submit"
+                  span.icon ↺
+                  span.user-name Logga in
+
+- unless current_user.to_s.strip.empty? || current_user_id.to_s.empty?
+  section.card
+    h2 Du är inloggad
+    p.muted= "Du är redan inloggad som #{current_user}. Fortsätt direkt till dina todos."
+    div.welcome-actions
+      a.btn href="/todos" Öppna dina todos
+      form.nav-logout action="/logout" method="post"
+        button.btn-secondary type="submit" Logga ut

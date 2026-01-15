@@ -8,6 +8,12 @@ html lang="en"
   body 
     header
       nav.nav
-        span.brand ToDo
+        a.brand href="/" ToDo
+        - if session[:user_name].to_s.strip != ''
+          span.nav-user
+            span.label Inloggad som
+            strong= session[:user_name]
+          form.nav-logout action="/logout" method="post"
+            button.btn-ghost type="submit" Logga ut
     main.page
       == yield
